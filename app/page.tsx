@@ -1,5 +1,6 @@
 ﻿import Image from 'next/image'
 import Link from 'next/link'
+import { createServerSupabaseClient } from '@/lib/supabase'
 
 const advantages = [
   {
@@ -73,7 +74,13 @@ const faqs = [
   },
 ]
 
-export default function HomePage() {
+export default async function HomePage() {
+  const supabase = await createServerSupabaseClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  const logoHref = user ? '/dashboard' : '/'
+
   return (
     <main className="bg-[#f4f1ec] text-[#141414]">
       <section className="px-6 pt-6">
@@ -90,7 +97,7 @@ export default function HomePage() {
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
           </div>
 
-          <header className="relative z-20 flex items-center justify-between px-8 py-6 text-white">
+          <header className="relative z-20 flex flex-col items-start gap-4 px-8 py-6 text-white sm:flex-row sm:items-center sm:justify-between">
             <details className="relative group z-30">
               <summary className="list-none text-xs tracking-[0.3em] uppercase border border-white/40 px-4 py-2 rounded-full cursor-pointer [&::-webkit-details-marker]:hidden">
                 Menu
@@ -113,7 +120,7 @@ export default function HomePage() {
                 </Link>
               </div>
             </details>
-            <span className="text-sm tracking-[0.35em] uppercase">ListingOS</span>
+            <Link href={logoHref} className="text-sm tracking-[0.35em] uppercase">ListingOS</Link>
             <Link
               href="/auth/signup"
               className="rounded-full bg-[#e2572f] px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em]"
@@ -122,7 +129,7 @@ export default function HomePage() {
             </Link>
           </header>
 
-          <div className="relative z-10 grid gap-8 px-8 pb-16 pt-6 text-white md:grid-cols-[1.2fr_0.8fr]">
+          <div className="relative z-10 grid gap-8 px-8 pb-16 pt-10 text-white sm:pt-8 md:grid-cols-[1.2fr_0.8fr] md:pt-6">
             <div>
               <p className="text-xs uppercase tracking-[0.4em] text-white/70">Premium marketing platform</p>
               <h1 className="mt-6 text-4xl font-[var(--font-display)] uppercase tracking-tight sm:text-5xl lg:text-6xl">
@@ -376,3 +383,8 @@ export default function HomePage() {
     </main>
   )
 }
+
+
+
+
+

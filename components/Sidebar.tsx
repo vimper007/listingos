@@ -27,15 +27,24 @@ export default function Sidebar({ agent }: SidebarProps) {
   }
 
   return (
-    <aside className="w-64 shrink-0 bg-navy h-full flex flex-col">
-      <div className="px-6 py-6 border-b border-navy-light">
-        <h1 className="text-white text-xl font-bold">ListingOS</h1>
-        {agent && (
-          <p className="text-gray-400 text-sm mt-1 truncate">{agent.full_name}</p>
-        )}
+    <aside className="w-full shrink-0 bg-navy md:h-full md:w-64 flex flex-col">
+      <div className="px-5 py-4 border-b border-navy-light flex items-center justify-between gap-4 md:block">
+        <div>
+          <h1 className="text-white text-lg font-bold md:text-xl">ListingOS</h1>
+          {agent && (
+            <p className="text-gray-400 text-xs mt-1 truncate md:text-sm">{agent.full_name}</p>
+          )}
+        </div>
+        <button
+          onClick={handleSignOut}
+          className="md:hidden text-left flex items-center gap-2 px-3 py-2 rounded-lg text-xs text-gray-400 hover:text-white hover:bg-white/5 transition-colors"
+        >
+          <span>🚪</span>
+          Sign out
+        </button>
       </div>
 
-      <nav className="flex-1 px-4 py-6 space-y-1">
+      <nav className="flex-1 px-4 py-4 md:py-6 md:space-y-1 flex md:flex-col gap-2 overflow-x-auto md:overflow-visible">
         {navItems.map((item) => {
           const isActive =
             item.href === '/dashboard'
@@ -46,7 +55,7 @@ export default function Sidebar({ agent }: SidebarProps) {
             <Link
               key={item.href}
               href={item.href}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
                 isActive
                   ? 'bg-white/10 text-white'
                   : 'text-gray-400 hover:text-white hover:bg-white/5'
@@ -59,7 +68,7 @@ export default function Sidebar({ agent }: SidebarProps) {
         })}
       </nav>
 
-      <div className="px-4 pb-6">
+      <div className="px-4 pb-6 mt-2 hidden md:block">
         {agent && (
           <div className="mb-4 px-3 py-2 bg-white/5 rounded-lg">
             <p className="text-xs text-gray-400 uppercase tracking-wide font-medium">Plan</p>

@@ -1,4 +1,4 @@
-import { notFound, redirect } from 'next/navigation'
+﻿import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createServerSupabaseClient } from '@/lib/supabase'
 import ContentTabs from '@/components/ContentTabs'
@@ -55,13 +55,13 @@ export default async function ListingDetailPage({
     .single()
 
   return (
-    <div className="p-8 max-w-4xl mx-auto">
-      <div className="flex items-center gap-3 mb-8">
+    <div className="p-6 sm:p-8 max-w-4xl mx-auto">
+      <div className="flex flex-wrap items-center gap-3 mb-8">
         <Link
           href="/dashboard"
           className="text-gray-400 hover:text-gray-600 text-sm transition-colors"
         >
-          ← Listings
+          &lt;- Listings
         </Link>
         <span className="text-gray-300">/</span>
         <span className="text-sm text-gray-600 truncate">{typedListing.address}</span>
@@ -69,12 +69,12 @@ export default async function ListingDetailPage({
 
       {/* Listing summary */}
       <div className="bg-white rounded-2xl border border-gray-200 p-6 mb-8">
-        <div className="flex items-start justify-between gap-4">
-          <div>
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div className="min-w-0">
             <h2 className="text-xl font-bold text-gray-900">{typedListing.address}</h2>
             <p className="text-gold font-bold text-2xl mt-1">{formatPrice(typedListing.price)}</p>
             <p className="text-gray-500 text-sm mt-1">
-              {typedListing.bedrooms} bed · {typedListing.bathrooms} bath ·{' '}
+              {typedListing.bedrooms} bed - {typedListing.bathrooms} bath -{' '}
               {typedListing.square_footage.toLocaleString()} sqft
             </p>
             {typedListing.features.length > 0 && (
@@ -95,7 +95,7 @@ export default async function ListingDetailPage({
             <img
               src={typedListing.photo_urls[0]}
               alt={typedListing.address}
-              className="w-32 h-24 object-cover rounded-xl shrink-0"
+              className="w-full h-48 object-cover rounded-xl sm:w-32 sm:h-24 shrink-0"
             />
           )}
         </div>
