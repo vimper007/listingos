@@ -11,6 +11,25 @@ interface ChatRequest {
 export async function POST(request: NextRequest) {
   const { message, listing_id } = (await request.json()) as ChatRequest
 
+  if (!listing_id || typeof listing_id !== 'string') {
+    return new Response(JSON.stringify({ error: 'listing_id is required' }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' },
+    })
+  }
+  if (!message || typeof message !== 'string' || message.trim().length === 0) {
+    return new Response(JSON.stringify({ error: 'message is required' }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' },
+    })
+  }
+  if (message.length > 1000) {
+    return new Response(JSON.stringify({ error: 'Message too long' }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' },
+    })
+  }
+
   const supabase = createAdminClient()
 
   const [listingResult, contentResult] = await Promise.all([

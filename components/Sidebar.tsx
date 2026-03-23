@@ -27,7 +27,7 @@ export default function Sidebar({ agent }: SidebarProps) {
   }
 
   return (
-    <aside className="w-64 shrink-0 bg-navy min-h-screen flex flex-col">
+    <aside className="w-64 shrink-0 bg-navy h-full flex flex-col">
       <div className="px-6 py-6 border-b border-navy-light">
         <h1 className="text-white text-xl font-bold">ListingOS</h1>
         {agent && (

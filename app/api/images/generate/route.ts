@@ -1,10 +1,11 @@
-import { InferenceClient } from '@huggingface/inference'
+import { InferenceClient, type InferenceProviderOrPolicy } from '@huggingface/inference'
 import { NextRequest, NextResponse } from 'next/server'
 import { createServerSupabaseClient } from '@/lib/supabase'
 import type { Listing } from '@/lib/types'
 
 const HF_IMAGE_MODEL = process.env.HF_IMAGE_MODEL
-const HF_INFERENCE_PROVIDER = process.env.HF_INFERENCE_PROVIDER || 'hf-inference'
+const HF_INFERENCE_PROVIDER =
+  (process.env.HF_INFERENCE_PROVIDER as InferenceProviderOrPolicy) || 'hf-inference'
 const MODEL_CACHE_TTL_MS = 10 * 60 * 1000
 let cachedModels: { at: number; models: string[] } | null = null
 
@@ -65,11 +66,14 @@ async function generateImageWithModel(prompt: string, modelId: string) {
   }
 
   const client = new InferenceClient(apiKey)
-  const imageBlob = await client.textToImage({
-    model: modelId,
-    inputs: prompt,
-    provider: HF_INFERENCE_PROVIDER,
-  })
+  const imageBlob = await client.textToImage(
+    {
+      model: modelId,
+      inputs: prompt,
+      provider: HF_INFERENCE_PROVIDER,
+    },
+    { outputType: 'blob' }
+  )
 
   const buffer = Buffer.from(await imageBlob.arrayBuffer())
   const contentType = imageBlob.type || 'image/png'

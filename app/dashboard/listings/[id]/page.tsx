@@ -27,10 +27,19 @@ export default async function ListingDetailPage({
 
   if (!user) redirect('/auth/login')
 
+  const { data: agent } = await supabase
+    .from('agents')
+    .select('id')
+    .eq('user_id', user.id)
+    .single()
+
+  if (!agent) redirect('/auth/login')
+
   const { data: listing } = await supabase
     .from('listings')
     .select('*')
     .eq('id', id)
+    .eq('agent_id', agent.id)
     .single()
 
   if (!listing) notFound()
@@ -46,7 +55,7 @@ export default async function ListingDetailPage({
     .single()
 
   return (
-    <div className="p-8 max-w-4xl">
+    <div className="p-8 max-w-4xl mx-auto">
       <div className="flex items-center gap-3 mb-8">
         <Link
           href="/dashboard"

@@ -18,6 +18,10 @@ body {
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
 }
 
+input, textarea, select {
+  color: var(--foreground);
+}
+
 /* Explicit utility definitions so all Tailwind v4 variants (hover:, focus:, etc.) work */
 @utility bg-navy {
   background-color: #1a2e4a;
@@ -41,4 +45,8 @@ body {
 
 @utility border-navy {
   border-color: #1a2e4a;
+}
+
+@utility ring-navy {
+  --tw-ring-color: #1a2e4a;
 }
