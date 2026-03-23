@@ -83,7 +83,7 @@ export default function PropertyChat({ listingId }: { listingId: string }) {
   }
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-200 shadow-sm flex flex-col h-80">
+    <div className="bg-white rounded-2xl border border-gray-200 shadow-sm flex flex-col h-80 overflow-hidden">
       <div className="px-4 py-3 border-b border-gray-100">
         <p className="text-sm font-semibold text-navy">Ask about this property</p>
       </div>
@@ -111,7 +111,10 @@ export default function PropertyChat({ listingId }: { listingId: string }) {
         <div ref={messagesEndRef} />
       </div>
 
-      <form onSubmit={handleSubmit} className="px-3 py-3 border-t border-gray-100 flex gap-2">
+      <form
+        onSubmit={handleSubmit}
+        className="w-full px-4 py-4 border-t border-gray-100 flex items-center gap-2"
+      >
         <input
           type="text"
           value={input}
@@ -124,12 +127,12 @@ export default function PropertyChat({ listingId }: { listingId: string }) {
           }}
           placeholder="Ask a question…"
           disabled={isLoading}
-          className="flex-1 px-3 py-2 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-navy focus:border-transparent disabled:opacity-50"
+          className="flex-1 min-w-0 h-9 px-3 text-sm border border-gray-200 rounded-xl leading-none focus:outline-none focus:ring-2 focus:ring-navy focus:border-transparent disabled:opacity-50"
         />
         <button
           type="submit"
           disabled={isLoading || !input.trim()}
-          className="bg-navy text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-navy-light transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+          className="h-9 shrink-0 inline-flex items-center justify-center bg-navy text-white px-4 rounded-xl text-sm font-medium hover:bg-navy-light transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
         >
           Send
         </button>

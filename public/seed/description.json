@@ -1,0 +1,334 @@
+{
+  "properties_list": [
+    {
+      "property_id": 1,
+      "address": "15 Ridge Crest Drive, Sentinel Point Reserves",
+      "asking_price_usd": 8500000,
+      "bedrooms": 5,
+      "bathrooms": 6,
+      "sq_footage": 7200,
+      "features": [
+        "Pool",
+        "Garage",
+        "Garden",
+        "Sea View",
+        "Mountain View",
+        "Modern Kitchen",
+        "Open Plan Living",
+        "Home Office",
+        "Pet Friendly",
+        "Solar Panels",
+        "Fireplace",
+        "Gym"
+      ],
+      "agent_notes": "The original bespoke masterpiece. Perched dramatically on a coastal hillside, this home dissolves boundaries between indoor and outdoor living. Features an infinity-edge pool, custom fire pit, and smart home automation. An architectural statement."
+    },
+    {
+      "property_id": 2,
+      "address": "42 Cedar Lane, Pine Valley Estates",
+      "asking_price_usd": 745000,
+      "bedrooms": 4,
+      "bathrooms": 2.5,
+      "sq_footage": 2850,
+      "features": [
+        "Garage",
+        "Garden",
+        "Modern Kitchen",
+        "Open Plan Living",
+        "Pet Friendly",
+        "Fireplace"
+      ],
+      "agent_notes": "Perfect suburban family home. Classic colonial architecture updated with a stunning chef's modern kitchen and expansive open-plan living. Features a large, fenced-in private garden, ideal for kids and pets, with a cozy fireplace in the den. Quiet cul-de-sac location."
+    },
+    {
+      "property_id": 3,
+      "address": "The Apex Penthouse, 100 Sky Tower, Metropolis",
+      "asking_price_usd": 12000000,
+      "bedrooms": 3,
+      "bathrooms": 4,
+      "sq_footage": 5500,
+      "features": [
+        "Garage",
+        "Sea View",
+        "Modern Kitchen",
+        "Open Plan Living",
+        "Home Office",
+        "Pet Friendly",
+        "Gym"
+      ],
+      "agent_notes": "Ultra-exclusive urban residence. This penthouse occupies the top two floors, offering 360-degree panoramic views of the entire city skyline and the ocean. Features a private glass elevator, a dedicated executive home office suite, and a private, high-tech gym. Metropolis living, redefined."
+    },
+    {
+      "property_id": 4,
+      "address": "78 River Run, Aspen Meadows, Rocky Mountains",
+      "asking_price_usd": 4200000,
+      "bedrooms": 6,
+      "bathrooms": 5.5,
+      "sq_footage": 6100,
+      "features": [
+        "Garage",
+        "Garden",
+        "Mountain View",
+        "Modern Kitchen",
+        "Open Plan Living",
+        "Fireplace"
+      ],
+      "agent_notes": "Sophisticated mountain rustica. A luxurious 'log palace' built with massive timber and local stone, situated directly on a trout stream. Features a spectacular double-sided stone fireplace spanning the open great room, chef's kitchen, and a wraparound deck with stunning, private mountain views. Ideal ski retreat."
+    },
+    {
+      "property_id": 5,
+      "address": "210 Ocean Blvd, Surfside Bay",
+      "asking_price_usd": 2900000,
+      "bedrooms": 3,
+      "bathrooms": 3,
+      "sq_footage": 2400,
+      "features": [
+        "Pool",
+        "Sea View",
+        "Modern Kitchen",
+        "Open Plan Living",
+        "Pet Friendly"
+      ],
+      "agent_notes": "Sleek coastal chic. This modern, minimalist home focuses entirely on the sea view. Walls of glass open directly onto a private deck and plunge pool. Steps from the private beach. Features white lacquer modern kitchen, pet-friendly polished concrete floors, and fluid open-plan living. True barefoot luxury."
+    },
+    {
+      "property_id": 6,
+      "address": "33 Maple Court, Maplewood Suburbia",
+      "asking_price_usd": 515000,
+      "bedrooms": 3,
+      "bathrooms": 2,
+      "sq_footage": 1950,
+      "features": [
+        "Garage",
+        "Garden",
+        "Pet Friendly",
+        "Fireplace"
+      ],
+      "agent_notes": "Cozy, charming, and move-in ready. A well-maintained mid-century ranch with a massive, level backyard garden and mature maple trees. Perfect starter home. Features a classic red brick fireplace, updated (but not ultra-modern) kitchen, and quiet, friendly neighborhood. Minutes from schools and parks."
+    },
+    {
+      "property_id": 7,
+      "address": "402 River Walk, Historic Distillery District",
+      "asking_price_usd": 1100000,
+      "bedrooms": 2,
+      "bathrooms": 2,
+      "sq_footage": 1750,
+      "features": [
+        "Garden",
+        "Sea View",
+        "Open Plan Living",
+        "Pet Friendly"
+      ],
+      "agent_notes": "Artist's industrial loft. Located in a repurposed brick and beam factory. Features 14-foot ceilings, exposed ductwork, original hardwood floors, and a private shared garden patio overlooking the river channel (sea view). Dramatic open-plan living, pet-friendly, and packed with historic charm. Ideal city living for creatives."
+    },
+    {
+      "property_id": 8,
+      "address": "12 High Ridge, Crestview Plateau",
+      "asking_price_usd": 6800000,
+      "bedrooms": 5,
+      "bathrooms": 5,
+      "sq_footage": 5900,
+      "features": [
+        "Pool",
+        "Garage",
+        "Mountain View",
+        "Modern Kitchen",
+        "Open Plan Living",
+        "Fireplace",
+        "Solar Panels"
+      ],
+      "agent_notes": "Modern eco-luxury with extreme views. This architectural marvel focuses on sustainability and unparalleled mountain vistas. Built with recycled steel and massive geothermal heating. Features a striking dark-tiled modern kitchen, large fire pit, zero-edge pool, and powerful solar panel array. Off-grid capable luxury."
+    },
+    {
+      "property_id": 9,
+      "address": "67 Oakwood Blvd, Forest Acres",
+      "asking_price_usd": 895000,
+      "bedrooms": 4,
+      "bathrooms": 3,
+      "sq_footage": 3200,
+      "features": [
+        "Garage",
+        "Garden",
+        "Open Plan Living",
+        "Pet Friendly",
+        "Fireplace"
+      ],
+      "agent_notes": "Classic suburban expansion. A traditional craftsman-style home with multiple additions, creating a spacious and versatile layout. Features a stunning, skylit open-plan living addition, massive main floor master, large stone fireplace, and a peaceful private garden surrounded by mature oaks. Excellent value for space."
+    },
+    {
+      "property_id": 10,
+      "address": "The Glass Cube, 17 Tech Drive, Silicon Prairie",
+      "asking_price_usd": 3500000,
+      "bedrooms": 3,
+      "bathrooms": 3.5,
+      "sq_footage": 3600,
+      "features": [
+        "Pool",
+        "Garage",
+        "Sea View",
+        "Modern Kitchen",
+        "Open Plan Living",
+        "Home Office",
+        "Gym"
+      ],
+      "agent_notes": "Minimalist, futuristic, and fully automated. This striking, geometric house is made of smart-tinting glass walls. Features integrated home office tech, minimalist 'invisible' modern kitchen, personal high-end gym, and a sleek lap pool. Panoramic lake views (sea view). The ultimate bachelor/bachelorette pad or tech hub."
+    },
+    {
+      "property_id": 11,
+      "address": "11 Pine Cone Trail, Silver Lake Wilderness",
+      "asking_price_usd": 395000,
+      "bedrooms": 2,
+      "bathrooms": 1,
+      "sq_footage": 1100,
+      "features": [
+        "Garden",
+        "Fireplace"
+      ],
+      "agent_notes": "A simple, rustic escape. A tiny, cozy 'A-frame' cabin set deep in the woods. This is not luxury; it's a true retreat from modern life. Features a cast-iron wood-burning fireplace, compact kitchen, loft bedroom, and direct access to wilderness trails. Off-grid lifestyle, no internet. True solitude."
+    },
+    {
+      "property_id": 12,
+      "address": "90 Coastal Highway, Breakers Beach",
+      "asking_price_usd": 1500000,
+      "bedrooms": 3,
+      "bathrooms": 2,
+      "sq_footage": 1600,
+      "features": [
+        "Sea View",
+        "Modern Kitchen",
+        "Open Plan Living"
+      ],
+      "agent_notes": "Iconic 'Saltbox' style, modernized. A classic, weathered-wood exterior hiding a sleek, ultra-modern interior. Features panoramic, dynamic ocean views (sea view), white concrete modern kitchen, open-plan living with dramatic ceiling height, and zero maintenance design. Perfect modern beach bungalow."
+    },
+    {
+      "property_id": 13,
+      "address": "40 Oak St, Historic Downtown",
+      "asking_price_usd": 1450000,
+      "bedrooms": 4,
+      "bathrooms": 4,
+      "sq_footage": 4000,
+      "features": [
+        "Garage",
+        "Garden",
+        "Fireplace"
+      ],
+      "agent_notes": "Charming Victorian, impeccably preserved. A stunning example of late 1800s architecture, updated with modern plumbing and electric while keeping all original details. Features grand, high ceilings, multiple ornate fireplaces, original stained glass, and a large, landscaped formal garden. Elegant city living with deep history."
+    },
+    {
+      "property_id": 14,
+      "address": "77 Summit Drive, Apex Mountain Resort",
+      "asking_price_usd": 5100000,
+      "bedrooms": 5,
+      "bathrooms": 6,
+      "sq_footage": 5800,
+      "features": [
+        "Pool",
+        "Garage",
+        "Garden",
+        "Mountain View",
+        "Modern Kitchen",
+        "Open Plan Living",
+        "Fireplace",
+        "Gym"
+      ],
+      "agent_notes": "The ultimate ski-in/ski-out chalet. Situated at the peak of the resort, this luxury home is built for mountain entertaining. Features a massive great room with a double fireplace, full bar, high-end gym, unique indoor/outdoor pool with mountain views, and direct ski access. Aspen style, accessible."
+    },
+    {
+      "property_id": 15,
+      "address": "22 Cedar Creek, Forest Reserve",
+      "asking_price_usd": 650000,
+      "bedrooms": 3,
+      "bathrooms": 2,
+      "sq_footage": 2100,
+      "features": [
+        "Garage",
+        "Garden",
+        "Open Plan Living",
+        "Pet Friendly",
+        "Fireplace"
+      ],
+      "agent_notes": "Modern craftsman, deep in nature. A new-build that blends seamlessly with the forest landscape. Features cedar cladding, open-plan living with vaulted ceilings, large stone fireplace, cozy home office nook, and an expansive garden surrounded by state park land. A perfect private retreat, minutes from civilization."
+    },
+    {
+      "property_id": 16,
+      "address": "1 The Green, Village Square, Historic Suburb",
+      "asking_price_usd": 975000,
+      "bedrooms": 3,
+      "bathrooms": 3,
+      "sq_footage": 2800,
+      "features": [
+        "Garage",
+        "Garden",
+        "Pet Friendly",
+        "Fireplace"
+      ],
+      "agent_notes": "A picturesque, storybook cottage. Classic English Tudor design with a perfectly manicured formal garden and picket fence, facing the historic town green. Features leaded glass windows, multiple cozy fireplaces, quaint, non-modern kitchen, and impeccable charm. Village living, refined and peaceful."
+    },
+    {
+      "property_id": 17,
+      "address": "15 Main Street, Arts District Loft",
+      "asking_price_usd": 725000,
+      "bedrooms": 1,
+      "bathrooms": 1.5,
+      "sq_footage": 1450,
+      "features": [
+        "Sea View",
+        "Open Plan Living",
+        "Pet Friendly"
+      ],
+      "agent_notes": "Pure, massive open-plan loft. A 'blank canvas' live/work space in a historic building. Features dramatic, raw open-plan living (the only bedroom is a loft platform), polished concrete floors, views of the river (sea view), and ultimate pet-friendly durability. Minutes from galleries, restaurants, and tech hubs."
+    },
+    {
+      "property_id": 18,
+      "address": "10 Canyon View, Desert Edge",
+      "asking_price_usd": 2200000,
+      "bedrooms": 3,
+      "bathrooms": 2.5,
+      "sq_footage": 2800,
+      "features": [
+        "Pool",
+        "Garage",
+        "Mountain View",
+        "Modern Kitchen",
+        "Open Plan Living",
+        "Home Office",
+        "Fireplace"
+      ],
+      "agent_notes": "Minimalist desert modern. An architectural statement house made of raw rammed earth and steel, blending perfectly into the canyon landscape. Features fluid indoor/outdoor open-plan living, black granite modern kitchen, private office with extreme views, and a sleek desert pool. Tranquil, artistic desert retreat."
+    },
+    {
+      "property_id": 19,
+      "address": "40 Lakefront Blvd, Crystal Lake",
+      "asking_price_usd": 1850000,
+      "bedrooms": 4,
+      "bathrooms": 3,
+      "sq_footage": 3000,
+      "features": [
+        "Pool",
+        "Garage",
+        "Sea View",
+        "Modern Kitchen",
+        "Open Plan Living",
+        "Pet Friendly",
+        "Fireplace"
+      ],
+      "agent_notes": "Luxury lakefront entertaining. This modern, multi-level home features expansive open-plan living spaces designed for large gatherings, leading to a massive deck and pool overlooking the lake (sea view). Includes a gourmet chef's kitchen, custom bar, unique central fireplace feature, and multiple bedroom suites. Perfect vacation home."
+    },
+    {
+      "property_id": 20,
+      "address": "17 Juniper Trail, Pine Ridge Estates",
+      "asking_price_usd": 595000,
+      "bedrooms": 3,
+      "bathrooms": 2.5,
+      "sq_footage": 2200,
+      "features": [
+        "Garage",
+        "Garden",
+        "Open Plan Living",
+        "Pet Friendly",
+        "Fireplace"
+      ],
+      "agent_notes": "Cozy, charming suburban family home with a rustic touch. A brick-and-siding craftsman style on a quiet wooded lot. Features a sunken living room with a large, warm fireplace, updated family kitchen, and a peaceful private garden. Excellent schools and a friendly neighborhood make this a perfect home."
+    }
+  ]
+}
