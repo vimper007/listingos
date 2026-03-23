@@ -17,3 +17,28 @@ body {
   color: var(--foreground);
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
 }
+
+/* Explicit utility definitions so all Tailwind v4 variants (hover:, focus:, etc.) work */
+@utility bg-navy {
+  background-color: #1a2e4a;
+}
+
+@utility bg-navy-light {
+  background-color: #243d63;
+}
+
+@utility text-navy {
+  color: #1a2e4a;
+}
+
+@utility text-gold {
+  color: #c9a84c;
+}
+
+@utility text-gold-light {
+  color: #d9be79;
+}
+
+@utility border-navy {
+  border-color: #1a2e4a;
+}

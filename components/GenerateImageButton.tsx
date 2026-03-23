@@ -24,6 +24,7 @@ export default function GenerateImageButton({ listingId }: { listingId: string }
       }
 
       router.refresh()
+      setLoading(false)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Image generation failed')
       setLoading(false)
@@ -45,7 +46,7 @@ export default function GenerateImageButton({ listingId }: { listingId: string }
           disabled={loading}
           className="px-4 py-2 bg-navy text-white rounded-lg text-sm font-medium hover:bg-navy-light disabled:opacity-60 transition-colors"
         >
-          {loading ? 'Generatingâ€¦' : 'Generate Photo'}
+          {loading ? 'Generating...' : 'Generate Photo'}
         </button>
       </div>
       {error && <p className="text-red-600 text-xs mt-3">{error}</p>}
