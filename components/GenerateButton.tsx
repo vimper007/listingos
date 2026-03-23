@@ -22,6 +22,7 @@ export default function GenerateButton({ listingId }: { listingId: string }) {
         throw new Error(data.error ?? 'Generation failed')
       }
       router.refresh()
+      setLoading(false)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Generation failed')
       setLoading(false)

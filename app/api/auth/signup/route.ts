@@ -1,31 +1,55 @@
+import { randomUUID } from 'node:crypto'
+import { resolveMx } from 'node:dns/promises'
 import { NextRequest, NextResponse } from 'next/server'
+import { signupSchema } from '@/lib/schemas'
 import { createAdminClient } from '@/lib/supabase'
 
-function generateSlug(name: string): string {
-  return (
-    name
-      .toLowerCase()
-      .replace(/[^a-z0-9\s-]/g, '')
-      .trim()
-      .replace(/\s+/g, '-') +
-    '-realty'
-  )
+function generateSlug(name: string, userId?: string): string {
+  const base =
+    name.toLowerCase().replace(/[^a-z0-9\s-]/g, '').trim().replace(/\s+/g, '-') || 'agent'
+  const suffix = (userId || randomUUID()).toLowerCase()
+  return `${base}-realty-${suffix}`
+}
+
+async function hasMxRecord(email: string) {
+  const domain = email.split('@')[1]?.trim().toLowerCase()
+  if (!domain) return false
+
+  try {
+    const records = await resolveMx(domain)
+    return records.length > 0
+  } catch (err) {
+    const code =
+      err && typeof err === 'object' && 'code' in err
+        ? String((err as { code?: string }).code)
+        : ''
+
+    if (code === 'ENOTFOUND' || code === 'ENODATA' || code === 'ENODOMAIN') {
+      return false
+    }
+
+    throw err
+  }
 }
 
 export async function POST(request: NextRequest) {
   try {
-    const { fullName, phone, email, password } = (await request.json()) as {
-      fullName: string
-      phone: string
-      email: string
-      password: string
+    const parsed = signupSchema.safeParse(await request.json())
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: parsed.error.issues[0]?.message ?? 'Invalid signup data' },
+        { status: 400 }
+      )
+    }
+
+    const { fullName, phone, email, password } = parsed.data
+
+    if (!(await hasMxRecord(email))) {
+      return NextResponse.json({ error: 'Email domain cannot receive mail' }, { status: 400 })
     }
 
     const admin = createAdminClient()
 
-    // 1. Create auth user with admin API — email_confirm:true skips confirmation email.
-    //    This route is the FALLBACK for when the email quota is exceeded on standard signUp.
-    //    user_metadata stored so /auth/callback can create the agent if ever needed.
     const { data: authData, error: signupError } = await admin.auth.admin.createUser({
       email,
       password,
@@ -38,11 +62,10 @@ export async function POST(request: NextRequest) {
     }
 
     if (!authData.user) {
-      return NextResponse.json({ error: 'Signup failed — no user returned' }, { status: 400 })
+      return NextResponse.json({ error: 'Signup failed - no user returned' }, { status: 400 })
     }
 
-    // 2. Create agent record using admin client (bypasses RLS)
-    const slug = generateSlug(fullName)
+    const slug = generateSlug(fullName, authData.user.id)
 
     const { error: agentError } = await admin.from('agents').insert({
       user_id: authData.user.id,
@@ -55,9 +78,13 @@ export async function POST(request: NextRequest) {
     })
 
     if (agentError) {
-      // Clean up the auth user so they can retry
       await admin.auth.admin.deleteUser(authData.user.id)
-      return NextResponse.json({ error: agentError.message }, { status: 500 })
+      const friendly =
+        agentError.message.includes('agents_slug_key') ||
+        agentError.message.toLowerCase().includes('duplicate key')
+          ? 'That full name already generated an existing profile slug. Please try again.'
+          : agentError.message
+      return NextResponse.json({ error: friendly }, { status: 500 })
     }
 
     return NextResponse.json({ ok: true }, { status: 201 })

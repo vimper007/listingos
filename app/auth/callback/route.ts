@@ -1,15 +1,12 @@
+import { randomUUID } from 'node:crypto'
 import { NextRequest, NextResponse } from 'next/server'
 import { createServerSupabaseClient, createAdminClient } from '@/lib/supabase'
 
-function generateSlug(name: string): string {
-  return (
-    name
-      .toLowerCase()
-      .replace(/[^a-z0-9\s-]/g, '')
-      .trim()
-      .replace(/\s+/g, '-') +
-    '-realty'
-  )
+function generateSlug(name: string, userId?: string): string {
+  const base =
+    name.toLowerCase().replace(/[^a-z0-9\s-]/g, '').trim().replace(/\s+/g, '-') || 'agent'
+  const suffix = (userId || randomUUID()).toLowerCase()
+  return `${base}-realty-${suffix}`
 }
 
 export async function GET(request: NextRequest) {
@@ -47,7 +44,7 @@ export async function GET(request: NextRequest) {
     // Standard email-confirmation flow: create agent from user metadata
     const fullName = (user.user_metadata?.full_name as string) || ''
     const phone = (user.user_metadata?.phone as string) || ''
-    const slug = generateSlug(fullName || user.email?.split('@')[0] || 'agent')
+    const slug = generateSlug(fullName || user.email?.split('@')[0] || 'agent', user.id)
 
     await admin.from('agents').insert({
       user_id: user.id,

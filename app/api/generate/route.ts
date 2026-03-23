@@ -1,18 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServerSupabaseClient } from '@/lib/supabase'
 import { generateListingContent } from '@/lib/gemini'
-
-interface GenerateRequest {
-  agent_id: string
-  address: string
-  price: number
-  bedrooms: number
-  bathrooms: number
-  square_footage: number
-  features: string[]
-  description: string | null
-  photo_urls: string[]
-}
+import { generateListingRequestSchema } from '@/lib/schemas'
+import { createServerSupabaseClient } from '@/lib/supabase'
 
 export async function POST(request: NextRequest) {
   try {
@@ -25,9 +14,16 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const body = (await request.json()) as GenerateRequest
+    const parsed = generateListingRequestSchema.safeParse(await request.json())
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: parsed.error.issues[0]?.message ?? 'Invalid request body' },
+        { status: 400 }
+      )
+    }
 
-    // Verify the agent belongs to the authenticated user
+    const body = parsed.data
+
     const { data: agent } = await supabase
       .from('agents')
       .select('id')
@@ -39,7 +35,6 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Agent not found' }, { status: 404 })
     }
 
-    // Create the listing record
     const { data: listing, error: listingError } = await supabase
       .from('listings')
       .insert({
@@ -50,7 +45,7 @@ export async function POST(request: NextRequest) {
         bathrooms: body.bathrooms,
         square_footage: body.square_footage,
         features: body.features,
-        description: body.description,
+        description: body.description ?? null,
         photo_urls: body.photo_urls,
         status: 'active',
       })
@@ -64,7 +59,6 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Generate content with Gemini
     const content = await generateListingContent({
       address: body.address,
       price: body.price,
@@ -72,10 +66,9 @@ export async function POST(request: NextRequest) {
       bathrooms: body.bathrooms,
       square_footage: body.square_footage,
       features: body.features,
-      description: body.description,
+      description: body.description ?? null,
     })
 
-    // Save generated content
     const { error: contentError } = await supabase.from('generated_content').insert({
       listing_id: listing.id,
       mls_description: content.mls_description,
@@ -87,10 +80,7 @@ export async function POST(request: NextRequest) {
     })
 
     if (contentError) {
-      return NextResponse.json(
-        { error: contentError.message },
-        { status: 500 }
-      )
+      return NextResponse.json({ error: contentError.message }, { status: 500 })
     }
 
     return NextResponse.json({ listing_id: listing.id }, { status: 201 })

@@ -38,6 +38,7 @@ export default function ContentTabs({ initialContent, listingId }: ContentTabsPr
   }
 
   async function handleSave() {
+    if (saving) return
     setSaving(true)
     setSaveStatus('idle')
     const supabase = createClient()

@@ -3,85 +3,87 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
+import { signupSchema, type SignupFormData } from '@/lib/schemas'
 import { createClient } from '@/lib/supabase-client'
 
 export default function SignupPage() {
   const router = useRouter()
-  const [fullName, setFullName] = useState('')
-  const [phone, setPhone] = useState('')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState<string | null>(null)
-  const [loading, setLoading] = useState(false)
-  const [confirmed, setConfirmed] = useState(false)
+  const [submitError, setSubmitError] = useState<string | null>(null)
+  const [confirmedEmail, setConfirmedEmail] = useState<string | null>(null)
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    setError(null)
-    setLoading(true)
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm<SignupFormData>({
+    resolver: zodResolver(signupSchema),
+    defaultValues: {
+      fullName: '',
+      phone: '',
+      email: '',
+      password: '',
+    },
+  })
+
+  async function onSubmit(data: SignupFormData) {
+    setSubmitError(null)
 
     const supabase = createClient()
     const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'
 
-    // Primary path: standard email confirmation with PKCE
-    const { data, error: signUpError } = await supabase.auth.signUp({
-      email,
-      password,
+    const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+      email: data.email,
+      password: data.password,
       options: {
         emailRedirectTo: `${appUrl}/auth/callback`,
-        data: { full_name: fullName, phone },
+        data: { full_name: data.fullName, phone: data.phone },
       },
     })
 
-    // Supabase silently returns empty identities when the email is already registered
-    if (!signUpError && data?.user?.identities?.length === 0) {
-      setError(
+    if (!signUpError && signUpData.user?.identities?.length === 0) {
+      setSubmitError(
         'An account with this email already exists. Check your inbox for a confirmation link, or sign in.'
       )
-      setLoading(false)
       return
     }
 
     if (!signUpError) {
-      // Standard path succeeded — user needs to confirm their email
-      setConfirmed(true)
-      setLoading(false)
+      setConfirmedEmail(data.email)
       return
     }
 
-    // Check if the failure is due to the Supabase email rate limit (3/hr on free tier)
     const isRateLimit =
       signUpError.message.toLowerCase().includes('rate limit') ||
       signUpError.message.includes('over_email_send_rate_limit')
 
     if (!isRateLimit) {
-      // Unrecoverable error — show it
-      setError(signUpError.message)
-      setLoading(false)
+      setSubmitError(signUpError.message)
       return
     }
 
-    // Fallback: email quota exceeded — use admin bypass via server route
     const res = await fetch('/api/auth/signup', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ fullName, phone, email, password }),
+      body: JSON.stringify(data),
     })
 
-    const resData = (await res.json()) as { error?: string }
+    const responseData = (await res.json()) as { error?: string }
 
     if (!res.ok) {
-      setError(resData.error ?? 'Signup failed')
-      setLoading(false)
+      setSubmitError(responseData.error ?? 'Signup failed')
       return
     }
 
-    // Admin bypass succeeded — sign in directly (no confirmation needed)
-    const { error: loginError } = await supabase.auth.signInWithPassword({ email, password })
+    const { error: loginError } = await supabase.auth.signInWithPassword({
+      email: data.email,
+      password: data.password,
+    })
 
     if (loginError) {
-      setError(loginError.message)
-      setLoading(false)
+      setSubmitError(loginError.message)
       return
     }
 
@@ -89,20 +91,25 @@ export default function SignupPage() {
     router.refresh()
   }
 
-  if (confirmed) {
+  if (confirmedEmail) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
         <div className="w-full max-w-md text-center">
-          <div className="text-5xl mb-4">📬</div>
+          <div className="text-3xl font-semibold text-navy mb-4">Mail</div>
           <h1 className="text-2xl font-bold text-navy mb-2">Check your email</h1>
           <p className="text-gray-500 text-sm mb-6">
-            We sent a confirmation link to <strong>{email}</strong>.<br />
+            We sent a confirmation link to <strong>{confirmedEmail}</strong>.<br />
             Click it to activate your account.
           </p>
           <p className="text-gray-400 text-xs">
             Wrong address?{' '}
             <button
-              onClick={() => { setConfirmed(false); setEmail(''); setPassword('') }}
+              type="button"
+              onClick={() => {
+                setConfirmedEmail(null)
+                setSubmitError(null)
+                reset()
+              }}
               className="text-gold underline"
             >
               Go back
@@ -122,7 +129,7 @@ export default function SignupPage() {
         </div>
 
         <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
             <div>
               <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 mb-1">
                 Full name
@@ -130,12 +137,13 @@ export default function SignupPage() {
               <input
                 id="fullName"
                 type="text"
-                required
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
+                {...register('fullName')}
                 className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy focus:border-transparent text-sm"
                 placeholder="Jane Smith"
               />
+              {errors.fullName && (
+                <p className="text-red-500 text-xs mt-1">{errors.fullName.message}</p>
+              )}
             </div>
 
             <div>
@@ -145,12 +153,13 @@ export default function SignupPage() {
               <input
                 id="phone"
                 type="tel"
-                required
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
+                {...register('phone')}
                 className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy focus:border-transparent text-sm"
                 placeholder="+1 555 000 0000"
               />
+              {errors.phone && (
+                <p className="text-red-500 text-xs mt-1">{errors.phone.message}</p>
+              )}
             </div>
 
             <div>
@@ -160,12 +169,13 @@ export default function SignupPage() {
               <input
                 id="email"
                 type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                {...register('email')}
                 className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy focus:border-transparent text-sm"
                 placeholder="you@example.com"
               />
+              {errors.email && (
+                <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>
+              )}
             </div>
 
             <div>
@@ -175,25 +185,27 @@ export default function SignupPage() {
               <input
                 id="password"
                 type="password"
-                required
-                minLength={8}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                {...register('password')}
                 className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy focus:border-transparent text-sm"
                 placeholder="Min. 8 characters"
               />
+              {errors.password && (
+                <p className="text-red-500 text-xs mt-1">{errors.password.message}</p>
+              )}
             </div>
 
-            {error && (
-              <p className="text-red-600 text-sm bg-red-50 px-4 py-2.5 rounded-lg">{error}</p>
+            {submitError && (
+              <p className="text-red-600 text-sm bg-red-50 px-4 py-2.5 rounded-lg">
+                {submitError}
+              </p>
             )}
 
             <button
               type="submit"
-              disabled={loading}
+              disabled={isSubmitting}
               className="w-full bg-navy text-white py-2.5 rounded-lg font-medium hover:bg-navy-light transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
             >
-              {loading ? 'Creating account...' : 'Create account'}
+              {isSubmitting ? 'Creating account...' : 'Create account'}
             </button>
           </form>
 

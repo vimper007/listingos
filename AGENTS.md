@@ -2,16 +2,18 @@
 
 Before doing anything:
 
-1. Read `./codex.md`
-2. Follow all rules defined there
-3. Do not violate documented patterns
-4. If unsure, prefer existing patterns over new ones
+1. At the start of every session, read `./memory.md` before any other task
+2. Treat `memory.md` as the canonical source of truth for all future work
+3. Use `./codex.md` and `./CLAUDE.md` only as compatibility mirrors
+4. If the mirrors disagree with `memory.md`, `memory.md` wins
 
 When making changes:
 
-- Update `codex.md` if:
-  - a new pattern is introduced
-  - a bug is fixed
-  - a rule is learned
+- If a bug is fixed or a reusable pattern is learned:
+  - update `memory.md` first
+  - then sync `codex.md` and `CLAUDE.md`
 
-- Keep `codex.md` concise and up-to-date
+- If the user reports a repeated mistake:
+  - add it to the `memory.md` MISTAKE LOG before fixing
+
+- Keep all memory files concise, ASCII-safe, and aligned

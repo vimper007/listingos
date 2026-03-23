@@ -198,7 +198,7 @@ export default async function PublicListingPage({
             <div className="bg-gray-50 rounded-2xl border border-gray-200 p-5">
               <p className="text-sm font-semibold text-gray-700 mb-2">Share this listing</p>
               <p className="text-xs text-gray-500 break-all select-all">
-                {`${process.env.NEXT_PUBLIC_APP_URL}/listing/${id}`}
+                {`${process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'}/listing/${id}`}
               </p>
             </div>
 
