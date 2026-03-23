@@ -23,11 +23,14 @@ export async function POST(request: NextRequest) {
 
     const admin = createAdminClient()
 
-    // 1. Create auth user with admin API — email_confirm:true skips confirmation email
+    // 1. Create auth user with admin API — email_confirm:true skips confirmation email.
+    //    This route is the FALLBACK for when the email quota is exceeded on standard signUp.
+    //    user_metadata stored so /auth/callback can create the agent if ever needed.
     const { data: authData, error: signupError } = await admin.auth.admin.createUser({
       email,
       password,
       email_confirm: true,
+      user_metadata: { full_name: fullName, phone },
     })
 
     if (signupError) {

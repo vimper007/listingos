@@ -11,10 +11,15 @@ export default function LoginPage() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+  const [showResend, setShowResend] = useState(false)
+  const [resendLoading, setResendLoading] = useState(false)
+  const [resendMessage, setResendMessage] = useState<string | null>(null)
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError(null)
+    setShowResend(false)
+    setResendMessage(null)
     setLoading(true)
 
     const supabase = createClient()
@@ -25,12 +30,39 @@ export default function LoginPage() {
 
     if (authError) {
       setError(authError.message)
+      // Show resend button for unconfirmed accounts
+      if (authError.message === 'Email not confirmed') {
+        setShowResend(true)
+      }
       setLoading(false)
       return
     }
 
     router.push('/dashboard')
     router.refresh()
+  }
+
+  async function handleResend() {
+    setResendLoading(true)
+    setResendMessage(null)
+    setError(null)
+
+    const res = await fetch('/api/auth/resend-confirmation', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email }),
+    })
+
+    const data = (await res.json()) as { error?: string }
+
+    if (!res.ok) {
+      setError(data.error ?? 'Failed to resend confirmation email')
+    } else {
+      setShowResend(false)
+      setResendMessage('Confirmation email sent. Check your inbox.')
+    }
+
+    setResendLoading(false)
   }
 
   return (
@@ -69,12 +101,30 @@ export default function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy focus:border-transparent text-sm"
-                placeholder="••••••••"
+                placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;"
               />
             </div>
 
             {error && (
-              <p className="text-red-600 text-sm bg-red-50 px-4 py-2.5 rounded-lg">{error}</p>
+              <div className="text-red-600 text-sm bg-red-50 px-4 py-2.5 rounded-lg">
+                <p>{error}</p>
+                {showResend && (
+                  <button
+                    type="button"
+                    onClick={handleResend}
+                    disabled={resendLoading}
+                    className="mt-2 text-red-700 font-medium underline disabled:opacity-60"
+                  >
+                    {resendLoading ? 'Sending...' : 'Resend confirmation email'}
+                  </button>
+                )}
+              </div>
+            )}
+
+            {resendMessage && (
+              <p className="text-green-700 text-sm bg-green-50 px-4 py-2.5 rounded-lg">
+                {resendMessage}
+              </p>
             )}
 
             <button
@@ -82,7 +132,7 @@ export default function LoginPage() {
               disabled={loading}
               className="w-full bg-navy text-white py-2.5 rounded-lg font-medium hover:bg-navy-light transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
             >
-              {loading ? 'Signing in…' : 'Sign in'}
+              {loading ? 'Signing in...' : 'Sign in'}
             </button>
           </form>
 

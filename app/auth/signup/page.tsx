@@ -13,29 +13,70 @@ export default function SignupPage() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+  const [confirmed, setConfirmed] = useState(false)
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError(null)
     setLoading(true)
 
-    // 1. Create user + agent record server-side (admin client bypasses RLS)
+    const supabase = createClient()
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'
+
+    // Primary path: standard email confirmation with PKCE
+    const { data, error: signUpError } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo: `${appUrl}/auth/callback`,
+        data: { full_name: fullName, phone },
+      },
+    })
+
+    // Supabase silently returns empty identities when the email is already registered
+    if (!signUpError && data?.user?.identities?.length === 0) {
+      setError(
+        'An account with this email already exists. Check your inbox for a confirmation link, or sign in.'
+      )
+      setLoading(false)
+      return
+    }
+
+    if (!signUpError) {
+      // Standard path succeeded — user needs to confirm their email
+      setConfirmed(true)
+      setLoading(false)
+      return
+    }
+
+    // Check if the failure is due to the Supabase email rate limit (3/hr on free tier)
+    const isRateLimit =
+      signUpError.message.toLowerCase().includes('rate limit') ||
+      signUpError.message.includes('over_email_send_rate_limit')
+
+    if (!isRateLimit) {
+      // Unrecoverable error — show it
+      setError(signUpError.message)
+      setLoading(false)
+      return
+    }
+
+    // Fallback: email quota exceeded — use admin bypass via server route
     const res = await fetch('/api/auth/signup', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ fullName, phone, email, password }),
     })
 
-    const data = (await res.json()) as { error?: string }
+    const resData = (await res.json()) as { error?: string }
 
     if (!res.ok) {
-      setError(data.error ?? 'Signup failed')
+      setError(resData.error ?? 'Signup failed')
       setLoading(false)
       return
     }
 
-    // 2. Sign in client-side to establish the browser session
-    const supabase = createClient()
+    // Admin bypass succeeded — sign in directly (no confirmation needed)
     const { error: loginError } = await supabase.auth.signInWithPassword({ email, password })
 
     if (loginError) {
@@ -46,6 +87,30 @@ export default function SignupPage() {
 
     router.push('/dashboard')
     router.refresh()
+  }
+
+  if (confirmed) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+        <div className="w-full max-w-md text-center">
+          <div className="text-5xl mb-4">📬</div>
+          <h1 className="text-2xl font-bold text-navy mb-2">Check your email</h1>
+          <p className="text-gray-500 text-sm mb-6">
+            We sent a confirmation link to <strong>{email}</strong>.<br />
+            Click it to activate your account.
+          </p>
+          <p className="text-gray-400 text-xs">
+            Wrong address?{' '}
+            <button
+              onClick={() => { setConfirmed(false); setEmail(''); setPassword('') }}
+              className="text-gold underline"
+            >
+              Go back
+            </button>
+          </p>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -128,7 +193,7 @@ export default function SignupPage() {
               disabled={loading}
               className="w-full bg-navy text-white py-2.5 rounded-lg font-medium hover:bg-navy-light transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
             >
-              {loading ? 'Creating account…' : 'Create account'}
+              {loading ? 'Creating account...' : 'Create account'}
             </button>
           </form>
 
