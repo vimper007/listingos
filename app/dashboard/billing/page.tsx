@@ -3,10 +3,10 @@ import { createServerSupabaseClient } from '@/lib/supabase'
 import type { Agent } from '@/lib/types'
 
 const planDetails = {
-  trial: { label: 'Free Trial', color: 'bg-gray-100 text-gray-700', listings: '5 listings' },
-  starter: { label: 'Starter', color: 'bg-blue-100 text-blue-700', listings: '10 listings/mo' },
-  pro: { label: 'Pro', color: 'bg-purple-100 text-purple-700', listings: '50 listings/mo' },
-  agency: { label: 'Agency', color: 'bg-gold/20 text-amber-800', listings: 'Unlimited listings' },
+  trial: { label: 'Free Trial', listings: '5 listings' },
+  starter: { label: 'Starter', listings: '10 listings/mo' },
+  pro: { label: 'Pro', listings: '50 listings/mo' },
+  agency: { label: 'Agency', listings: 'Unlimited listings' },
 }
 
 const pricingPlans = [
@@ -63,63 +63,177 @@ export default async function BillingPage() {
   return (
     <div className="p-8 max-w-4xl">
       <div className="mb-8">
-        <h2 className="text-2xl font-bold text-gray-900">Billing</h2>
-        <p className="text-gray-500 text-sm mt-1">Manage your subscription.</p>
+        <h2
+          style={{
+            fontFamily: 'var(--font-display)',
+            fontSize: 26,
+            color: 'var(--text-primary)',
+            fontWeight: 700,
+          }}
+        >
+          Billing
+        </h2>
+        <p style={{ color: 'var(--text-secondary)', fontSize: 14, marginTop: 6 }}>
+          Manage your subscription.
+        </p>
       </div>
 
       {/* Current plan */}
-      <div className="bg-white rounded-2xl border border-gray-200 p-6 mb-8">
-        <h3 className="font-semibold text-gray-900 mb-4">Current Plan</h3>
+      <div
+        className="mb-8"
+        style={{
+          background: 'var(--surface)',
+          border: '1px solid var(--border)',
+          borderRadius: 'var(--radius-lg)',
+          padding: 24,
+        }}
+      >
+        <h3
+          style={{
+            fontFamily: 'var(--font-display)',
+            fontSize: 16,
+            color: 'var(--text-primary)',
+            fontWeight: 600,
+            marginBottom: 14,
+          }}
+        >
+          Current Plan
+        </h3>
         <div className="flex items-center gap-3">
-          <span className={`px-3 py-1.5 rounded-full text-sm font-semibold ${currentPlan.color}`}>
+          <span
+            style={{
+              padding: '4px 14px',
+              borderRadius: 999,
+              fontSize: 13,
+              fontWeight: 600,
+              background: 'var(--primary-muted)',
+              color: 'var(--primary)',
+              border: '1px solid rgba(201,168,76,0.2)',
+              fontFamily: 'var(--font-mono)',
+            }}
+          >
             {currentPlan.label}
           </span>
-          <span className="text-gray-500 text-sm">{currentPlan.listings}</span>
+          <span style={{ color: 'var(--text-secondary)', fontSize: 14 }}>{currentPlan.listings}</span>
         </div>
         {typedAgent.plan === 'trial' && trialEndsAt && (
-          <p className="text-amber-600 text-sm mt-3">
+          <p style={{ color: 'var(--primary)', fontSize: 14, marginTop: 12 }}>
             Trial ends on {trialEndsAt}. Upgrade to keep access.
           </p>
         )}
       </div>
 
       {/* Pricing plans */}
-      <h3 className="font-semibold text-gray-900 mb-4">Upgrade Plan</h3>
+      <h3
+        style={{
+          fontFamily: 'var(--font-display)',
+          fontSize: 18,
+          color: 'var(--text-primary)',
+          fontWeight: 600,
+          marginBottom: 16,
+        }}
+      >
+        Upgrade Plan
+      </h3>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
         {pricingPlans.map((plan) => (
           <div
             key={plan.key}
-            className={`bg-white rounded-2xl border p-6 relative ${
-              plan.highlight ? 'border-navy shadow-md' : 'border-gray-200'
-            }`}
+            style={{
+              background: 'var(--surface)',
+              border: plan.highlight ? '1px solid var(--border-highlight)' : '1px solid var(--border)',
+              borderRadius: 'var(--radius-lg)',
+              padding: 24,
+              position: 'relative',
+              boxShadow: plan.highlight ? 'var(--shadow-card)' : 'none',
+            }}
           >
             {plan.highlight && (
-              <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-navy text-white text-xs font-semibold px-3 py-1 rounded-full">
-                Most Popular
+              <span
+                style={{
+                  position: 'absolute',
+                  top: -12,
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  background: 'linear-gradient(135deg, #c9a84c, #e0bf6e)',
+                  color: '#0a0a0f',
+                  fontSize: 11,
+                  fontWeight: 700,
+                  padding: '3px 12px',
+                  borderRadius: 999,
+                  letterSpacing: '0.04em',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                MOST POPULAR
               </span>
             )}
-            <h4 className="font-bold text-gray-900 text-lg">{plan.name}</h4>
-            <div className="mt-2 mb-4">
-              <span className="text-3xl font-bold text-gray-900">{plan.price}</span>
-              <span className="text-gray-500 text-sm">{plan.period}</span>
+
+            <h4
+              style={{
+                fontFamily: 'var(--font-display)',
+                fontSize: 18,
+                color: 'var(--text-primary)',
+                fontWeight: 700,
+                marginBottom: 8,
+              }}
+            >
+              {plan.name}
+            </h4>
+            <div style={{ marginBottom: 20 }}>
+              <span
+                style={{
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: 30,
+                  fontWeight: 700,
+                  color: plan.highlight ? 'var(--primary)' : 'var(--text-primary)',
+                }}
+              >
+                {plan.price}
+              </span>
+              <span style={{ color: 'var(--text-secondary)', fontSize: 13 }}>{plan.period}</span>
             </div>
-            <ul className="space-y-2 mb-6">
+            <ul className="space-y-2.5 mb-6">
               {plan.features.map((f) => (
-                <li key={f} className="flex items-center gap-2 text-sm text-gray-600">
-                  <span className="text-green-500">✓</span>
+                <li
+                  key={f}
+                  className="flex items-center gap-2"
+                  style={{ fontSize: 13, color: 'var(--text-secondary)' }}
+                >
+                  <span style={{ color: 'var(--success)', flexShrink: 0 }}>✓</span>
                   {f}
                 </li>
               ))}
             </ul>
             <button
               disabled={typedAgent.plan === plan.key}
-              className={`w-full py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                typedAgent.plan === plan.key
-                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+              style={{
+                width: '100%',
+                height: 40,
+                borderRadius: 'var(--radius-sm)',
+                fontSize: 13,
+                fontWeight: 600,
+                fontFamily: 'var(--font-body)',
+                cursor: typedAgent.plan === plan.key ? 'not-allowed' : 'pointer',
+                transition: 'all 0.2s',
+                ...(typedAgent.plan === plan.key
+                  ? {
+                      background: 'var(--surface-raised)',
+                      color: 'var(--text-tertiary)',
+                      border: '1px solid var(--border)',
+                    }
                   : plan.highlight
-                  ? 'bg-navy text-white hover:bg-navy-light'
-                  : 'border border-gray-300 text-gray-700 hover:bg-gray-50'
-              }`}
+                  ? {
+                      background: 'linear-gradient(135deg, #c9a84c, #e0bf6e)',
+                      color: '#0a0a0f',
+                      border: 'none',
+                    }
+                  : {
+                      background: 'transparent',
+                      color: 'var(--primary)',
+                      border: '1px solid var(--primary)',
+                    }),
+              }}
             >
               {typedAgent.plan === plan.key ? 'Current plan' : `Upgrade to ${plan.name}`}
             </button>
@@ -127,7 +241,7 @@ export default async function BillingPage() {
         ))}
       </div>
 
-      <p className="text-gray-400 text-xs mt-6 text-center">
+      <p style={{ color: 'var(--text-tertiary)', fontSize: 12, marginTop: 24, textAlign: 'center' }}>
         Stripe checkout integration — connect your Stripe account to enable payments.
       </p>
     </div>

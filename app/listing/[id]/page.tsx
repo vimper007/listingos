@@ -70,60 +70,176 @@ export default async function PublicListingPage({
   const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`
   const emailUrl = `mailto:${agent?.email ?? ''}?subject=${encodeURIComponent(`Enquiry: ${typedListing.address}`)}`
 
+  const heroPhoto = typedListing.photo_urls[0]
+  const remainingPhotos = typedListing.photo_urls.slice(1)
+
+  const agentInitials = agent?.full_name
+    ? agent.full_name.split(' ').map((n) => n[0]).join('').slice(0, 2).toUpperCase()
+    : '?'
+
   return (
-    <div className="min-h-screen bg-white">
-      {/* Header */}
-      <header className="bg-navy text-white py-4 px-6">
-        <div className="max-w-5xl mx-auto flex items-center justify-between">
-          <span className="font-bold text-lg">ListingOS</span>
+    <div className="min-h-screen" style={{ background: '#ffffff', color: '#111111', fontFamily: 'var(--font-body)' }}>
+
+      {/* ── HERO ──────────────────────────────────── */}
+      <div
+        className="relative"
+        style={{ height: '70vh', minHeight: 400, overflow: 'hidden', background: '#111' }}
+      >
+        {heroPhoto ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={heroPhoto}
+            alt={typedListing.address}
+            style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
+          />
+        ) : (
+          <div style={{ position: 'absolute', inset: 0, background: '#1a1a2a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <span style={{ fontSize: 80, opacity: 0.15, color: '#c9a84c' }}>◆</span>
+          </div>
+        )}
+
+        {/* Gradient overlay */}
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            background: 'linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0) 40%, rgba(0,0,0,0.7) 80%, rgba(0,0,0,0.92) 100%)',
+          }}
+        />
+
+        {/* Header bar */}
+        <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            padding: '20px 32px',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
+        >
+          <div className="flex items-center gap-2">
+            <span style={{ color: '#c9a84c', fontSize: 14 }}>◆</span>
+            <span style={{ fontFamily: 'var(--font-display)', fontSize: 18, color: '#ffffff', fontWeight: 700 }}>
+              ListingOS
+            </span>
+          </div>
           {agent && (
-            <span className="text-gray-300 text-sm">{agent.full_name}</span>
+            <span style={{ color: 'rgba(255,255,255,0.7)', fontSize: 14 }}>{agent.full_name}</span>
           )}
         </div>
-      </header>
 
-      {/* Photo gallery */}
-      {typedListing.photo_urls.length > 0 ? (
-        <PhotoGallery photos={typedListing.photo_urls} address={typedListing.address} />
-      ) : (
-        <div className="w-full h-72 bg-gray-100 flex items-center justify-center text-6xl">
-          🏠
+        {/* Price + Address overlaid bottom-left */}
+        <div
+          style={{
+            position: 'absolute',
+            bottom: 32,
+            left: 40,
+          }}
+        >
+          <div
+            style={{
+              fontFamily: 'var(--font-mono)',
+              fontSize: 42,
+              fontWeight: 700,
+              color: '#ffffff',
+              lineHeight: 1,
+              marginBottom: 8,
+              textShadow: '0 2px 8px rgba(0,0,0,0.4)',
+            }}
+          >
+            {formatPrice(typedListing.price)}
+          </div>
+          <div
+            style={{
+              fontFamily: 'var(--font-body)',
+              fontSize: 20,
+              color: 'rgba(255,255,255,0.85)',
+              fontWeight: 400,
+            }}
+          >
+            {typedListing.address}
+          </div>
         </div>
-      )}
 
-      <div className="max-w-5xl mx-auto px-6 py-10">
+        {/* Bed/Bath/Sqft frosted pills bottom-right */}
+        <div
+          className="flex gap-2"
+          style={{
+            position: 'absolute',
+            bottom: 36,
+            right: 40,
+          }}
+        >
+          {[
+            `${typedListing.bedrooms} bed`,
+            `${typedListing.bathrooms} bath`,
+            `${typedListing.square_footage.toLocaleString()} sqft`,
+          ].map((stat) => (
+            <span
+              key={stat}
+              style={{
+                backdropFilter: 'blur(8px)',
+                background: 'rgba(255,255,255,0.12)',
+                border: '1px solid rgba(255,255,255,0.2)',
+                borderRadius: 999,
+                padding: '6px 14px',
+                color: '#ffffff',
+                fontSize: 13,
+                fontWeight: 500,
+              }}
+            >
+              {stat}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* ── CONTENT ───────────────────────────────── */}
+      <div className="max-w-6xl mx-auto px-6 py-12">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-          {/* Main content */}
-          <div className="lg:col-span-2 space-y-8">
-            {/* Price & basics */}
-            <div>
-              <p className="text-3xl font-bold text-gold">{formatPrice(typedListing.price)}</p>
-              <h1 className="text-2xl font-bold text-gray-900 mt-1">{typedListing.address}</h1>
-              <div className="flex gap-6 mt-3 text-gray-600">
-                <span className="flex items-center gap-1.5 text-sm">
-                  <span className="text-lg">🛏</span>
-                  {typedListing.bedrooms} Bedrooms
-                </span>
-                <span className="flex items-center gap-1.5 text-sm">
-                  <span className="text-lg">🚿</span>
-                  {typedListing.bathrooms} Bathrooms
-                </span>
-                <span className="flex items-center gap-1.5 text-sm">
-                  <span className="text-lg">📐</span>
-                  {typedListing.square_footage.toLocaleString()} sq ft
-                </span>
-              </div>
-            </div>
+
+          {/* Left column (65%) */}
+          <div className="lg:col-span-2 space-y-10">
+
+            {/* Remaining photos grid */}
+            {remainingPhotos.length > 0 && (
+              <PhotoGallery photos={remainingPhotos} address={typedListing.address} />
+            )}
 
             {/* Features */}
             {typedListing.features.length > 0 && (
               <div>
-                <h2 className="text-lg font-bold text-navy mb-3">Property Features</h2>
+                <h2
+                  style={{
+                    fontFamily: 'var(--font-display)',
+                    fontSize: 22,
+                    color: '#111111',
+                    fontWeight: 700,
+                    marginBottom: 16,
+                    paddingTop: 4,
+                    borderTop: '2px solid #c9a84c',
+                    display: 'inline-block',
+                    paddingRight: 20,
+                  }}
+                >
+                  Property Features
+                </h2>
                 <div className="flex flex-wrap gap-2">
                   {typedListing.features.map((f) => (
                     <span
                       key={f}
-                      className="px-4 py-2 bg-navy/5 border border-navy/10 text-navy text-sm rounded-full font-medium"
+                      style={{
+                        padding: '6px 16px',
+                        background: 'rgba(201,168,76,0.08)',
+                        border: '1px solid rgba(201,168,76,0.25)',
+                        color: '#8b6914',
+                        borderRadius: 999,
+                        fontSize: 14,
+                        fontWeight: 500,
+                      }}
                     >
                       {f}
                     </span>
@@ -132,75 +248,195 @@ export default async function PublicListingPage({
               </div>
             )}
 
-            {/* Description */}
+            {/* About this property */}
             {content?.mls_description && (
               <div>
-                <h2 className="text-lg font-bold text-navy mb-3">About This Property</h2>
-                <p className="text-gray-700 leading-relaxed whitespace-pre-line">
+                <h2
+                  style={{
+                    fontFamily: 'var(--font-display)',
+                    fontSize: 22,
+                    color: '#111111',
+                    fontWeight: 700,
+                    marginBottom: 16,
+                    paddingTop: 4,
+                    borderTop: '2px solid #c9a84c',
+                    display: 'inline-block',
+                    paddingRight: 20,
+                  }}
+                >
+                  About This Property
+                </h2>
+                <p
+                  style={{
+                    color: '#444',
+                    fontSize: 16,
+                    lineHeight: 1.8,
+                    whiteSpace: 'pre-line',
+                    fontFamily: 'var(--font-body)',
+                  }}
+                >
                   {content.mls_description}
                 </p>
               </div>
             )}
           </div>
 
-          {/* Sidebar */}
-          <div className="space-y-5">
+          {/* Right column (35%) — sticky */}
+          <div className="space-y-5 lg:sticky lg:top-8 lg:self-start">
+
             {/* Agent card */}
             {agent && (
-              <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
-                <div className="flex items-start gap-4">
+              <div
+                style={{
+                  background: '#ffffff',
+                  border: '1px solid #e5e7eb',
+                  borderRadius: 20,
+                  padding: 24,
+                  boxShadow: '0 4px 20px rgba(0,0,0,0.06)',
+                }}
+              >
+                {/* Agent info */}
+                <div className="flex items-center gap-4 mb-4">
                   {agent.logo_url ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
                       src={agent.logo_url}
                       alt={agent.full_name}
-                      className="w-16 h-16 rounded-full object-cover border-2 border-gray-100"
+                      style={{ width: 56, height: 56, borderRadius: '50%', objectFit: 'cover', border: '2px solid #f3f4f6' }}
                     />
                   ) : (
                     <div
-                      className="w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold text-white shrink-0"
-                      style={{ backgroundColor: agent.brand_color }}
+                      style={{
+                        width: 56,
+                        height: 56,
+                        borderRadius: '50%',
+                        background: '#c9a84c',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: '#0a0a0f',
+                        fontSize: 18,
+                        fontWeight: 700,
+                        fontFamily: 'var(--font-display)',
+                        flexShrink: 0,
+                      }}
                     >
-                      {agent.full_name[0]}
+                      {agentInitials}
                     </div>
                   )}
-                  <div className="min-w-0">
-                    <p className="font-bold text-gray-900">{agent.full_name}</p>
-                    <p className="text-gray-500 text-sm">{agent.phone}</p>
+                  <div>
+                    <p
+                      style={{
+                        fontFamily: 'var(--font-display)',
+                        fontSize: 17,
+                        fontWeight: 700,
+                        color: '#111111',
+                      }}
+                    >
+                      {agent.full_name}
+                    </p>
+                    <p style={{ color: '#888', fontSize: 13 }}>Licensed Real Estate Agent</p>
+                    <div className="flex gap-0.5 mt-1">
+                      {[1,2,3,4,5].map((s) => (
+                        <span key={s} style={{ color: '#c9a84c', fontSize: 14 }}>★</span>
+                      ))}
+                    </div>
                   </div>
                 </div>
+
                 {agent.bio && (
-                  <p className="text-gray-600 text-sm mt-4 leading-relaxed">{agent.bio}</p>
+                  <p style={{ color: '#555', fontSize: 14, lineHeight: 1.7, marginBottom: 16 }}>
+                    {agent.bio}
+                  </p>
                 )}
 
-                <div className="flex flex-col gap-3 mt-5">
+                <div className="flex flex-col gap-3">
                   <a
                     href={whatsappUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-2 bg-green-500 text-white py-3 rounded-xl font-semibold text-sm hover:bg-green-600 transition-colors"
+                    className="flex items-center justify-center gap-2"
+                    style={{
+                      height: 46,
+                      background: 'linear-gradient(135deg, #c9a84c, #e0bf6e)',
+                      color: '#0a0a0f',
+                      borderRadius: 12,
+                      fontWeight: 600,
+                      fontSize: 14,
+                      textDecoration: 'none',
+                      transition: 'filter 0.2s, transform 0.2s',
+                    }}
                   >
-                    <span>💬</span>
-                    Book a Viewing on WhatsApp
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                    </svg>
+                    Book a Viewing
                   </a>
                   <a
                     href={emailUrl}
-                    className="flex items-center justify-center gap-2 border border-navy text-navy py-3 rounded-xl font-semibold text-sm hover:bg-navy hover:text-white transition-colors"
+                    className="flex items-center justify-center gap-2"
+                    style={{
+                      height: 46,
+                      border: '1px solid #c9a84c',
+                      color: '#c9a84c',
+                      borderRadius: 12,
+                      fontWeight: 600,
+                      fontSize: 14,
+                      textDecoration: 'none',
+                      transition: 'background 0.2s',
+                    }}
                   >
-                    <span>✉️</span>
-                    Enquire by Email
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                      <polyline points="22,6 12,13 2,6" />
+                    </svg>
+                    Send a Message
                   </a>
+                </div>
+
+                {/* Share */}
+                <div style={{ borderTop: '1px solid #f3f4f6', marginTop: 20, paddingTop: 16 }}>
+                  <p style={{ fontSize: 13, color: '#888', marginBottom: 10 }}>Share this listing</p>
+                  <div className="flex gap-2">
+                    <a
+                      href={whatsappUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-center"
+                      style={{
+                        width: 36,
+                        height: 36,
+                        borderRadius: 8,
+                        border: '1px solid #e5e7eb',
+                        color: '#25D366',
+                        textDecoration: 'none',
+                      }}
+                    >
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                      </svg>
+                    </a>
+                    <a
+                      href={emailUrl}
+                      className="flex items-center justify-center"
+                      style={{
+                        width: 36,
+                        height: 36,
+                        borderRadius: 8,
+                        border: '1px solid #e5e7eb',
+                        color: '#c9a84c',
+                        textDecoration: 'none',
+                      }}
+                    >
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                        <polyline points="22,6 12,13 2,6" />
+                      </svg>
+                    </a>
+                  </div>
                 </div>
               </div>
             )}
-
-            {/* Share */}
-            <div className="bg-gray-50 rounded-2xl border border-gray-200 p-5">
-              <p className="text-sm font-semibold text-gray-700 mb-2">Share this listing</p>
-              <p className="text-xs text-gray-500 break-all select-all">
-                {`${process.env.NEXT_PUBLIC_APP_URL}/listing/${id}`}
-              </p>
-            </div>
 
             {/* AI property chat */}
             <PropertyChat listingId={id} />
@@ -209,10 +445,18 @@ export default async function PublicListingPage({
       </div>
 
       {/* Footer */}
-      <footer className="bg-navy text-gray-400 py-8 px-6 mt-12">
-        <div className="max-w-5xl mx-auto text-center text-sm">
-          <p>Powered by <span className="text-white font-semibold">ListingOS</span></p>
-        </div>
+      <footer
+        style={{
+          background: '#f9f9f9',
+          borderTop: '1px solid #e5e7eb',
+          padding: '20px 24px',
+          textAlign: 'center',
+        }}
+      >
+        <p style={{ color: '#aaa', fontSize: 13 }}>
+          Powered by{' '}
+          <span style={{ color: '#c9a84c', fontWeight: 600 }}>ListingOS</span>
+        </p>
       </footer>
     </div>
   )

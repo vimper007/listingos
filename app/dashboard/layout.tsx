@@ -23,9 +23,9 @@ export default async function DashboardLayout({
     .single()
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="flex min-h-screen" style={{ background: 'var(--background)' }}>
       <Sidebar agent={agent} />
-      <main className="flex-1 min-w-0">{children}</main>
+      <main className="flex-1 min-w-0 page-enter">{children}</main>
     </div>
   )
 }

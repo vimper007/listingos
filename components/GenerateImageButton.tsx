@@ -32,11 +32,20 @@ export default function GenerateImageButton({ listingId }: { listingId: string }
   }
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-200 p-6">
-      <div className="flex items-start justify-between gap-4">
+    <div
+      style={{
+        background: 'var(--surface)',
+        border: '1px solid var(--border)',
+        borderRadius: 'var(--radius-lg)',
+        padding: '16px 20px',
+      }}
+    >
+      <div className="flex items-center justify-between gap-4">
         <div>
-          <h3 className="text-sm font-semibold text-gray-900">AI Listing Photos</h3>
-          <p className="text-xs text-gray-500 mt-1">
+          <h3 style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-primary)', marginBottom: 3 }}>
+            AI Listing Photos
+          </h3>
+          <p style={{ fontSize: 13, color: 'var(--text-secondary)' }}>
             Generate a free-tier AI photo based on listing details.
           </p>
         </div>
@@ -44,12 +53,41 @@ export default function GenerateImageButton({ listingId }: { listingId: string }
           type="button"
           onClick={handleGenerate}
           disabled={loading}
-          className="px-4 py-2 bg-navy text-white rounded-lg text-sm font-medium hover:bg-navy-light disabled:opacity-60 transition-colors"
+          className="btn-ghost-gold flex items-center gap-2"
+          style={{
+            height: 36,
+            padding: '0 16px',
+            borderRadius: 'var(--radius-sm)',
+            fontSize: 13,
+            fontFamily: 'var(--font-body)',
+            flexShrink: 0,
+            opacity: loading ? 0.6 : 1,
+            cursor: loading ? 'not-allowed' : 'pointer',
+          }}
         >
-          {loading ? 'Generating...' : 'Generate Photo'}
+          {loading ? (
+            <>
+              <span
+                style={{
+                  width: 12,
+                  height: 12,
+                  border: '2px solid rgba(201,168,76,0.3)',
+                  borderTopColor: 'var(--primary)',
+                  borderRadius: '50%',
+                  display: 'inline-block',
+                  animation: 'spin 0.8s linear infinite',
+                }}
+              />
+              Generating…
+            </>
+          ) : (
+            'Generate Photo'
+          )}
         </button>
       </div>
-      {error && <p className="text-red-600 text-xs mt-3">{error}</p>}
+      {error && (
+        <p style={{ color: 'var(--error)', fontSize: 12, marginTop: 10 }}>{error}</p>
+      )}
     </div>
   )
 }

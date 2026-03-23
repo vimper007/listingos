@@ -8,6 +8,25 @@ interface ProfileFormProps {
   agent: Agent
 }
 
+function FormLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <label
+      style={{
+        display: 'block',
+        fontSize: 12,
+        fontWeight: 500,
+        letterSpacing: '0.06em',
+        textTransform: 'uppercase',
+        color: 'var(--text-secondary)',
+        marginBottom: 8,
+        fontFamily: 'var(--font-body)',
+      }}
+    >
+      {children}
+    </label>
+  )
+}
+
 export default function ProfileForm({ agent }: ProfileFormProps) {
   const [form, setForm] = useState({
     full_name: agent.full_name,
@@ -43,84 +62,128 @@ export default function ProfileForm({ agent }: ProfileFormProps) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="bg-white rounded-2xl border border-gray-200 p-6 space-y-5">
+      <div
+        style={{
+          background: 'var(--surface)',
+          border: '1px solid var(--border)',
+          borderRadius: 'var(--radius-lg)',
+          padding: 24,
+        }}
+        className="space-y-5"
+      >
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Full name</label>
+          <FormLabel>Full name</FormLabel>
           <input
             type="text"
             required
             value={form.full_name}
             onChange={(e) => handleField('full_name', e.target.value)}
-            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-navy focus:border-transparent"
+            className="input-dark w-full"
+            style={{ padding: '11px 14px', fontSize: 14 }}
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+          <FormLabel>Phone</FormLabel>
           <input
             type="tel"
             required
             value={form.phone}
             onChange={(e) => handleField('phone', e.target.value)}
-            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-navy focus:border-transparent"
+            className="input-dark w-full"
+            style={{ padding: '11px 14px', fontSize: 14 }}
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Bio{' '}
-            <span className="text-gray-400 font-normal">(shown on property pages)</span>
-          </label>
+          <FormLabel>
+            Bio <span style={{ textTransform: 'none', opacity: 0.6 }}>(shown on property pages)</span>
+          </FormLabel>
           <textarea
             value={form.bio}
             onChange={(e) => handleField('bio', e.target.value)}
             rows={4}
-            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-navy focus:border-transparent resize-none"
+            className="input-dark w-full"
+            style={{ padding: '11px 14px', fontSize: 14, resize: 'none', lineHeight: 1.6 }}
             placeholder="Tell buyers about your experience and expertise..."
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Brand color</label>
+          <FormLabel>Brand color</FormLabel>
           <div className="flex items-center gap-3">
             <input
               type="color"
               value={form.brand_color}
               onChange={(e) => handleField('brand_color', e.target.value)}
-              className="w-12 h-10 border border-gray-300 rounded-lg cursor-pointer p-1"
+              style={{
+                width: 44,
+                height: 40,
+                border: '1px solid var(--border)',
+                borderRadius: 'var(--radius-sm)',
+                cursor: 'pointer',
+                padding: 3,
+                background: 'var(--surface-raised)',
+              }}
             />
             <input
               type="text"
               value={form.brand_color}
               onChange={(e) => handleField('brand_color', e.target.value)}
-              className="flex-1 px-4 py-2.5 border border-gray-300 rounded-lg text-sm font-mono focus:outline-none focus:ring-2 focus:ring-navy focus:border-transparent"
-              placeholder="#1a2e4a"
+              className="input-dark flex-1"
+              style={{
+                padding: '11px 14px',
+                fontSize: 14,
+                fontFamily: 'var(--font-mono)',
+              }}
+              placeholder="#c9a84c"
             />
           </div>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Your URL slug</label>
-          <div className="flex items-center gap-2">
-            <span className="text-gray-400 text-sm">{process.env.NEXT_PUBLIC_APP_URL}/agent/</span>
-            <span className="text-sm font-mono text-gray-900">{agent.slug}</span>
+          <FormLabel>Your URL slug</FormLabel>
+          <div
+            className="flex items-center gap-2"
+            style={{
+              padding: '11px 14px',
+              background: 'var(--surface-raised)',
+              border: '1px solid var(--border)',
+              borderRadius: 'var(--radius-md)',
+              fontSize: 14,
+            }}
+          >
+            <span style={{ color: 'var(--text-tertiary)', fontFamily: 'var(--font-mono)' }}>
+              {process.env.NEXT_PUBLIC_APP_URL}/agent/
+            </span>
+            <span style={{ color: 'var(--primary)', fontFamily: 'var(--font-mono)', fontWeight: 500 }}>
+              {agent.slug}
+            </span>
           </div>
         </div>
       </div>
 
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-4">
         <button
           type="submit"
           disabled={saving}
-          className="px-6 py-2.5 bg-navy text-white rounded-lg text-sm font-medium hover:bg-navy-light disabled:opacity-60 transition-colors"
+          className="btn-gold"
+          style={{
+            height: 42,
+            padding: '0 24px',
+            borderRadius: 'var(--radius-md)',
+            fontSize: 14,
+            fontFamily: 'var(--font-body)',
+            opacity: saving ? 0.6 : 1,
+          }}
         >
           {saving ? 'Saving…' : 'Save Profile'}
         </button>
         {status === 'saved' && (
-          <span className="text-green-600 text-sm font-medium">✓ Saved</span>
+          <span style={{ color: 'var(--success)', fontSize: 14, fontWeight: 500 }}>✓ Saved</span>
         )}
         {status === 'error' && (
-          <span className="text-red-600 text-sm font-medium">Save failed</span>
+          <span style={{ color: 'var(--error)', fontSize: 14, fontWeight: 500 }}>Save failed</span>
         )}
       </div>
     </form>

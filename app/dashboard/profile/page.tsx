@@ -22,8 +22,17 @@ export default async function ProfilePage() {
   return (
     <div className="p-8 max-w-2xl">
       <div className="mb-8">
-        <h2 className="text-2xl font-bold text-gray-900">Profile</h2>
-        <p className="text-gray-500 text-sm mt-1">
+        <h2
+          style={{
+            fontFamily: 'var(--font-display)',
+            fontSize: 26,
+            color: 'var(--text-primary)',
+            fontWeight: 700,
+          }}
+        >
+          Profile
+        </h2>
+        <p style={{ color: 'var(--text-secondary)', fontSize: 14, marginTop: 6 }}>
           Your profile appears on public property pages.
         </p>
       </div>

@@ -65,11 +65,12 @@ async function generateImageWithModel(prompt: string, modelId: string) {
   }
 
   const client = new InferenceClient(apiKey)
-  const imageBlob = await client.textToImage({
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const imageBlob = (await client.textToImage({
     model: modelId,
     inputs: prompt,
-    provider: HF_INFERENCE_PROVIDER,
-  })
+    provider: HF_INFERENCE_PROVIDER as any,
+  })) as unknown as Blob
 
   const buffer = Buffer.from(await imageBlob.arrayBuffer())
   const contentType = imageBlob.type || 'image/png'

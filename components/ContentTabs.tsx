@@ -14,13 +14,69 @@ interface ContentTabsProps {
 
 type TabKey = ContentFieldKey
 
-const tabs: { key: TabKey; label: string }[] = [
-  { key: 'mls_description', label: 'MLS Description' },
-  { key: 'instagram_post', label: 'Instagram' },
-  { key: 'facebook_post', label: 'Facebook' },
-  { key: 'email_template', label: 'Email' },
-  { key: 'whatsapp_message', label: 'WhatsApp' },
-  { key: 'tiktok_script', label: 'TikTok Script' },
+const tabs: { key: TabKey; label: string; icon: React.ReactNode }[] = [
+  {
+    key: 'mls_description',
+    label: 'MLS Description',
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+        <polyline points="14 2 14 8 20 8" />
+        <line x1="16" y1="13" x2="8" y2="13" />
+        <line x1="16" y1="17" x2="8" y2="17" />
+        <polyline points="10 9 9 9 8 9" />
+      </svg>
+    ),
+  },
+  {
+    key: 'instagram_post',
+    label: 'Instagram',
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+      </svg>
+    ),
+  },
+  {
+    key: 'facebook_post',
+    label: 'Facebook',
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+      </svg>
+    ),
+  },
+  {
+    key: 'email_template',
+    label: 'Email',
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+        <polyline points="22,6 12,13 2,6" />
+      </svg>
+    ),
+  },
+  {
+    key: 'whatsapp_message',
+    label: 'WhatsApp',
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+      </svg>
+    ),
+  },
+  {
+    key: 'tiktok_script',
+    label: 'TikTok Script',
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+        <polygon points="23 7 16 12 23 17 23 7" />
+        <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
+      </svg>
+    ),
+  },
 ]
 
 export default function ContentTabs({ initialContent, listingId }: ContentTabsProps) {
@@ -105,106 +161,283 @@ export default function ContentTabs({ initialContent, listingId }: ContentTabsPr
   const isRegeneratingThis = regeneratingField === activeTab
   const anyBusy = regeneratingAll || regeneratingField !== null
   const currentValue = content[activeTab]
+  const charCount = currentValue?.length ?? 0
 
   return (
-    <div>
-      {/* Tab bar */}
-      <div className="flex gap-1 bg-gray-100 p-1 rounded-xl mb-6 flex-wrap">
-        {tabs.map((tab) => (
-          <button
-            key={tab.key}
-            type="button"
-            onClick={() => setActiveTab(tab.key)}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
-              activeTab === tab.key
-                ? 'bg-white text-navy shadow-sm'
-                : 'text-gray-500 hover:text-gray-700'
-            }`}
-          >
-            {tab.label}
-          </button>
-        ))}
+    <div className="flex gap-0 min-h-0" style={{ border: '1px solid var(--border)', borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
+      {/* Left: vertical tab list */}
+      <div
+        style={{
+          width: 192,
+          flexShrink: 0,
+          background: 'var(--surface)',
+          borderRight: '1px solid var(--border)',
+          display: 'flex',
+          flexDirection: 'column',
+          padding: '8px 0',
+        }}
+      >
+        {tabs.map((tab) => {
+          const isActive = activeTab === tab.key
+          return (
+            <button
+              key={tab.key}
+              type="button"
+              onClick={() => setActiveTab(tab.key)}
+              className="flex items-center gap-2.5 w-full transition-all duration-150"
+              style={{
+                height: 40,
+                padding: '0 14px',
+                border: 'none',
+                background: isActive ? 'var(--primary-muted)' : 'transparent',
+                color: isActive ? 'var(--primary)' : 'var(--text-secondary)',
+                boxShadow: isActive ? 'inset 2px 0 0 var(--primary)' : 'none',
+                fontSize: 13,
+                fontWeight: isActive ? 500 : 400,
+                cursor: 'pointer',
+                textAlign: 'left',
+              }}
+              onMouseEnter={(e) => {
+                if (!isActive) {
+                  const el = e.currentTarget as HTMLElement
+                  el.style.color = 'var(--text-primary)'
+                  el.style.background = 'rgba(201,168,76,0.05)'
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!isActive) {
+                  const el = e.currentTarget as HTMLElement
+                  el.style.color = 'var(--text-secondary)'
+                  el.style.background = 'transparent'
+                }
+              }}
+            >
+              <span style={{ opacity: isActive ? 1 : 0.6, display: 'flex', alignItems: 'center' }}>
+                {tab.icon}
+              </span>
+              {tab.label}
+            </button>
+          )
+        })}
+
+        {/* Divider */}
+        <div style={{ height: 1, background: 'var(--border)', margin: '8px 14px' }} />
+
+        {/* Property page link */}
         <Link
           href={`/listing/${listingId}`}
           target="_blank"
-          className="px-4 py-2 rounded-lg text-sm font-medium text-gray-500 hover:text-gray-700 transition-colors whitespace-nowrap ml-auto"
+          className="flex items-center gap-2.5 transition-all duration-150"
+          style={{
+            height: 40,
+            padding: '0 14px',
+            color: 'var(--text-tertiary)',
+            fontSize: 13,
+            textDecoration: 'none',
+          }}
+          onMouseEnter={(e) => {
+            const el = e.currentTarget as HTMLElement
+            el.style.color = 'var(--text-secondary)'
+          }}
+          onMouseLeave={(e) => {
+            const el = e.currentTarget as HTMLElement
+            el.style.color = 'var(--text-tertiary)'
+          }}
         >
-          Property Page ↗
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+            <polyline points="15 3 21 3 21 9" />
+            <line x1="10" y1="14" x2="21" y2="3" />
+          </svg>
+          Public Page
         </Link>
       </div>
 
-      {/* Content area */}
-      <div className="bg-white rounded-2xl border border-gray-200 p-6">
-        <div className="flex items-center justify-between mb-3">
-          <h3 className="font-semibold text-gray-900">
+      {/* Right: content editor */}
+      <div
+        style={{
+          flex: 1,
+          minWidth: 0,
+          background: 'var(--surface-raised)',
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
+        {/* Header */}
+        <div
+          className="flex items-center justify-between"
+          style={{
+            padding: '16px 24px',
+            borderBottom: '1px solid var(--border)',
+          }}
+        >
+          <h3
+            style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: 18,
+              color: 'var(--text-primary)',
+              fontWeight: 600,
+            }}
+          >
             {tabs.find((t) => t.key === activeTab)?.label}
           </h3>
+          <div className="flex items-center gap-3">
+            <span style={{ color: 'var(--text-tertiary)', fontSize: 12, fontFamily: 'var(--font-mono)' }}>
+              {charCount.toLocaleString()} chars
+            </span>
+            <CopyButton text={currentValue} />
+          </div>
+        </div>
+
+        {/* Textarea */}
+        <div style={{ flex: 1, padding: '20px 24px' }}>
+          <textarea
+            value={currentValue}
+            onChange={(e) => handleEdit(e.target.value)}
+            rows={14}
+            style={{
+              width: '100%',
+              background: 'transparent',
+              border: 'none',
+              outline: 'none',
+              resize: 'none',
+              color: 'var(--text-primary)',
+              fontSize: 15,
+              fontFamily: 'var(--font-body)',
+              lineHeight: 1.7,
+            }}
+          />
+        </div>
+
+        {/* Error */}
+        {regenError && (
+          <div style={{ padding: '0 24px 12px' }}>
+            <p
+              style={{
+                color: 'var(--error)',
+                fontSize: 13,
+                background: 'var(--error-muted)',
+                padding: '8px 14px',
+                borderRadius: 'var(--radius-sm)',
+              }}
+            >
+              {regenError}
+            </p>
+          </div>
+        )}
+
+        {/* Action bar */}
+        <div
+          className="flex items-center justify-between"
+          style={{
+            padding: '14px 24px',
+            borderTop: '1px solid var(--border)',
+            background: 'var(--surface)',
+          }}
+        >
+          {/* Left: Regenerate this + Regenerate All */}
           <div className="flex items-center gap-2">
             <button
               type="button"
               onClick={() => handleRegenerateField(activeTab)}
               disabled={anyBusy}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-50 transition-colors"
+              className="flex items-center gap-1.5 transition-all duration-150"
+              style={{
+                height: 34,
+                padding: '0 14px',
+                border: '1px solid var(--border)',
+                borderRadius: 'var(--radius-sm)',
+                background: 'transparent',
+                color: isRegeneratingThis ? 'var(--text-primary)' : 'var(--text-secondary)',
+                fontSize: 13,
+                cursor: anyBusy ? 'not-allowed' : 'pointer',
+                opacity: anyBusy && !isRegeneratingThis ? 0.5 : 1,
+              }}
             >
               {isRegeneratingThis ? (
                 <>
-                  <span className="inline-block w-3 h-3 border-2 border-gray-400/30 border-t-gray-600 rounded-full animate-spin" />
+                  <span
+                    style={{
+                      width: 12,
+                      height: 12,
+                      border: '2px solid rgba(240,240,245,0.2)',
+                      borderTopColor: 'var(--text-primary)',
+                      borderRadius: '50%',
+                      display: 'inline-block',
+                      animation: 'spin 0.8s linear infinite',
+                    }}
+                  />
                   Regenerating…
                 </>
               ) : (
-                '↺ Regenerate this'
+                '↺ Regenerate'
               )}
             </button>
-            <CopyButton text={currentValue} />
+
+            <button
+              type="button"
+              onClick={handleRegenerateAll}
+              disabled={anyBusy}
+              className="flex items-center gap-1.5 transition-all duration-150"
+              style={{
+                height: 34,
+                padding: '0 14px',
+                border: '1px solid var(--border)',
+                borderRadius: 'var(--radius-sm)',
+                background: 'transparent',
+                color: 'var(--text-tertiary)',
+                fontSize: 13,
+                cursor: anyBusy ? 'not-allowed' : 'pointer',
+                opacity: anyBusy && !regeneratingAll ? 0.5 : 1,
+              }}
+            >
+              {regeneratingAll ? (
+                <>
+                  <span
+                    style={{
+                      width: 12,
+                      height: 12,
+                      border: '2px solid rgba(240,240,245,0.2)',
+                      borderTopColor: 'var(--text-tertiary)',
+                      borderRadius: '50%',
+                      display: 'inline-block',
+                      animation: 'spin 0.8s linear infinite',
+                    }}
+                  />
+                  Regenerating All…
+                </>
+              ) : (
+                '↺ All'
+              )}
+            </button>
+          </div>
+
+          {/* Right: Save + status */}
+          <div className="flex items-center gap-3">
+            {saveStatus === 'saved' && (
+              <span style={{ color: 'var(--success)', fontSize: 13 }}>✓ Saved</span>
+            )}
+            {saveStatus === 'error' && (
+              <span style={{ color: 'var(--error)', fontSize: 13 }}>Save failed</span>
+            )}
+            <button
+              type="button"
+              onClick={handleSave}
+              disabled={saving || anyBusy}
+              className="btn-gold flex items-center gap-2"
+              style={{
+                height: 34,
+                padding: '0 16px',
+                borderRadius: 'var(--radius-sm)',
+                fontSize: 13,
+                fontFamily: 'var(--font-body)',
+                opacity: saving || anyBusy ? 0.6 : 1,
+              }}
+            >
+              {saving ? 'Saving…' : 'Save'}
+            </button>
           </div>
         </div>
-
-        <textarea
-          value={currentValue}
-          onChange={(e) => handleEdit(e.target.value)}
-          rows={12}
-          className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-navy focus:border-transparent resize-none font-mono leading-relaxed"
-        />
-      </div>
-
-      {/* Error */}
-      {regenError && (
-        <p className="text-red-600 text-sm bg-red-50 px-4 py-2.5 rounded-lg mt-3">{regenError}</p>
-      )}
-
-      {/* Actions */}
-      <div className="flex items-center gap-3 mt-4">
-        <button
-          type="button"
-          onClick={handleSave}
-          disabled={saving || anyBusy}
-          className="px-5 py-2.5 bg-navy text-white rounded-lg text-sm font-medium hover:bg-navy-light disabled:opacity-60 transition-colors"
-        >
-          {saving ? 'Saving…' : 'Save Changes'}
-        </button>
-
-        <button
-          type="button"
-          onClick={handleRegenerateAll}
-          disabled={anyBusy}
-          className="px-5 py-2.5 border border-gray-300 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 disabled:opacity-60 transition-colors"
-        >
-          {regeneratingAll ? (
-            <span className="flex items-center gap-2">
-              <span className="inline-block w-3.5 h-3.5 border-2 border-gray-400/30 border-t-gray-600 rounded-full animate-spin" />
-              Regenerating All…
-            </span>
-          ) : (
-            '↺ Regenerate All'
-          )}
-        </button>
-
-        {saveStatus === 'saved' && (
-          <span className="text-green-600 text-sm font-medium">✓ Saved</span>
-        )}
-        {saveStatus === 'error' && (
-          <span className="text-red-600 text-sm font-medium">Save failed</span>
-        )}
       </div>
     </div>
   )
